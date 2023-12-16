@@ -1,0 +1,15 @@
+version: '3'
+services:
+  mongodb:
+    image: mongo
+    container_name: mongo-db
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongo-db-data:/data/db
+  livechat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"

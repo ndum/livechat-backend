@@ -25,6 +25,15 @@ This is a simple backend for a live chat, developed using Node.js, Express, Mong
 
 The server runs by default on port 3000 unless you change the port in the .env file.
 
+### Using Docker Compose
+1. Clone the repository or download it.
+2. Change into the project directory.
+3. Create the `.env` file in the main directory and add the necessary configurations
+4. Run the following command to start the server
+```bash
+docker-compose up -d
+```
+
 ## API Endpoints and Documentation
 
 The API documentation was created with Swagger and can be viewed at `http://localhost:3000/api/docs`.
