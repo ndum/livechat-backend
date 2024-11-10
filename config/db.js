@@ -1,7 +1,8 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/livechat';
+const isDocker = process.env.DOCKER === 'true';
+const MONGODB_URI = isDocker ? 'mongodb://mongodb:27017/livechat' : (process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/livechat');
 
 const options = {
     useNewUrlParser: true,
