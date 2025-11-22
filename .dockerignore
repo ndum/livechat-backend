@@ -44,4 +44,3 @@ src/tests/
 .prettierignore
 eslint.config.js
 vitest.config.ts
-tsconfig.json

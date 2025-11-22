@@ -3,6 +3,10 @@ import { getEnv } from './env.js';
 
 const env = getEnv();
 
+const apiPath = process.env.NODE_ENV === 'production'
+    ? './dist/routes/v1/*.js'  // Production
+    : './src/routes/v1/*.ts';   // Development
+
 const swaggerOptions: swaggerJsDoc.Options = {
   definition: {
     openapi: '3.0.0',
@@ -45,7 +49,7 @@ const swaggerOptions: swaggerJsDoc.Options = {
       },
     ],
   },
-  apis: ['./src/routes/v1/*.ts'], // Path to the API routes with TypeScript
+  apis: [apiPath], // Path to the API routes with TypeScript
 };
 
 export const swaggerSpec = swaggerJsDoc(swaggerOptions);

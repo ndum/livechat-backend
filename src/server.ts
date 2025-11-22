@@ -127,7 +127,7 @@ process.on('unhandledRejection', (reason: unknown) => {
 });
 
 // Start server only if this is the main module
-if (import.meta.url === `file:///${process.argv[1]?.replace(/\\/g, '/')}`) {
+if (process.env.DOCKER === 'true' || import.meta.url === `file:///${process.argv[1]?.replace(/\\/g, '/')}`) {
   server.listen(env.PORT, () => {
     logger.info(`
 =========================================
