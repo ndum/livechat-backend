@@ -1,0 +1,51 @@
+import swaggerJsDoc from 'swagger-jsdoc';
+import { getEnv } from './env.js';
+
+const env = getEnv();
+
+const swaggerOptions: swaggerJsDoc.Options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Live Chat API',
+      version: '2.0.0',
+      description: 'A modern live chat backend with TypeScript, Prisma, and clean architecture',
+      contact: {
+        name: 'Nicolas Dumermuth',
+      },
+    },
+    servers: [
+      {
+        url: env.URL ? `${env.URL}:${env.PORT}/api/v1` : `http://localhost:${env.PORT}/api/v1`,
+        description: 'API Server',
+      },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          description: 'Enter JWT token',
+        },
+      },
+    },
+    tags: [
+      {
+        name: 'Authentication',
+        description: 'User authentication endpoints',
+      },
+      {
+        name: 'Chat',
+        description: 'Chat message endpoints',
+      },
+      {
+        name: 'Users',
+        description: 'User management endpoints',
+      },
+    ],
+  },
+  apis: ['./src/routes/v1/*.ts'], // Path to the API routes with TypeScript
+};
+
+export const swaggerSpec = swaggerJsDoc(swaggerOptions);
