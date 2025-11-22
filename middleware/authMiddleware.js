@@ -1,4 +1,4 @@
-require('dotenv').config();
+// dotenv is already configured in server.js
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 

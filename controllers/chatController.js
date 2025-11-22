@@ -49,11 +49,13 @@ exports.createMessage = async (req, res) => {
 
         await newMessage.save();
 
-        req.ws.clients.forEach((client) => {
-            if (client.readyState === WebSocket.OPEN) {
-                client.send(JSON.stringify({ type: 'new_message', data: newMessage }));
-            }
-        });
+        if (req.ws && req.ws.clients) {
+            req.ws.clients.forEach((client) => {
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(JSON.stringify({ type: 'new_message', data: newMessage }));
+                }
+            });
+        }
 
         res.status(201).json(newMessage);
     } catch (err) {
@@ -85,11 +87,13 @@ exports.updateMessage = async (req, res) => {
             return res.status(404).json({ error: 'Message not found' });
         }
 
-        req.ws.clients.forEach((client) => {
-            if (client.readyState === WebSocket.OPEN) {
-                client.send(JSON.stringify({ type: 'changed_message', data: updatedMessage }));
-            }
-        });
+        if (req.ws && req.ws.clients) {
+            req.ws.clients.forEach((client) => {
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(JSON.stringify({ type: 'changed_message', data: updatedMessage }));
+                }
+            });
+        }
 
         res.json(updatedMessage);
     } catch (err) {
@@ -107,11 +111,13 @@ exports.deleteMessage = async (req, res) => {
             return res.status(404).json({ error: 'Message not found' });
         }
 
-        req.ws.clients.forEach((client) => {
-            if (client.readyState === WebSocket.OPEN) {
-                client.send(JSON.stringify({ type: 'deleted_message', data: deletedMessage }));
-            }
-        });
+        if (req.ws && req.ws.clients) {
+            req.ws.clients.forEach((client) => {
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(JSON.stringify({ type: 'deleted_message', data: deletedMessage }));
+                }
+            });
+        }
 
         res.json({ success: true });
     } catch (err) {

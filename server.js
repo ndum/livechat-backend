@@ -11,7 +11,7 @@ const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const ioMiddleware = require('./middleware/ioMiddleware');
 
-dotenv.config();
+dotenv.config({ quiet: true });
 
 const app = express();
 const server = http.createServer(app);
@@ -33,8 +33,11 @@ app.get('/', (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 
-server.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-})
+// Only start the server if this file is run directly (not during tests)
+if (require.main === module) {
+    server.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
+}
 
-module.exports = server;
+module.exports = { app, server, PORT };

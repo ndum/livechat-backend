@@ -39,11 +39,13 @@ exports.login = async (req, res) => {
 
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-        req.ws.clients.forEach((client) => {
-            if (client.readyState === WebSocket.OPEN) {
-                client.send(JSON.stringify({ type: 'new_login', data: {username: username}}));
-            }
-        });
+        if (req.ws && req.ws.clients) {
+            req.ws.clients.forEach((client) => {
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(JSON.stringify({ type: 'new_login', data: {username: username}}));
+                }
+            });
+        }
 
         res.json({ userId: user._id, token });
     } catch (err) {

@@ -1,4 +1,4 @@
-require('dotenv').config();
+// dotenv is already configured in server.js
 const swaggerJsDoc = require('swagger-jsdoc');
 
 const swaggerOptions = {

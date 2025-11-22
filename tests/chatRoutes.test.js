@@ -1,23 +1,34 @@
 const WebSocket = require('ws');
 const request = require('supertest');
 const chai = require('chai');
-const app = require('../server');
+const { app, server } = require('../server');
 const expect = chai.expect;
 
-const wsURL = "ws://localhost:3000";
+const TEST_PORT = 3001;
+const wsURL = `ws://localhost:${TEST_PORT}`;
 
 describe('Test Auth and Chat Routes...', () => {
     let messageId;
     let token;
     let ws;
+    let serverInstance;
 
     before(async () => {
-        await request(app)
+        // Start the server on test port
+        await new Promise((resolve) => {
+            serverInstance = server.listen(TEST_PORT, resolve);
+        });
+
+        const registerRes = await request(app)
             .post('/api/auth/register')
             .send({
                 username: 'testUser',
                 password: 'testPassword'
             });
+
+        if (registerRes.statusCode !== 201 && registerRes.statusCode !== 400) {
+            throw new Error(`Registration failed with status ${registerRes.statusCode}: ${JSON.stringify(registerRes.body)}`);
+        }
 
         const res = await request(app)
             .post('/api/auth/login')
@@ -25,6 +36,10 @@ describe('Test Auth and Chat Routes...', () => {
                 username: 'testUser',
                 password: 'testPassword'
             });
+
+        if (res.statusCode !== 200) {
+            throw new Error(`Login failed with status ${res.statusCode}: ${JSON.stringify(res.body)}`);
+        }
 
         token = res.body.token;
 
@@ -132,9 +147,14 @@ describe('Test Auth and Chat Routes...', () => {
         ws.removeAllListeners('message');
     });
 
-    after(() => {
+    after((done) => {
         if (ws && ws.readyState === WebSocket.OPEN) {
             ws.close();
+        }
+        if (serverInstance) {
+            serverInstance.close(done);
+        } else {
+            done();
         }
     });
 });

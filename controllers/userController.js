@@ -51,11 +51,13 @@ exports.updateUser = async (req, res) => {
 
         await user.save();
 
-        req.ws.clients.forEach((client) => {
-            if (client.readyState === WebSocket.OPEN) {
-                client.send(JSON.stringify({ type: 'changed_user', data: user }));
-            }
-        });
+        if (req.ws && req.ws.clients) {
+            req.ws.clients.forEach((client) => {
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(JSON.stringify({ type: 'changed_user', data: user }));
+                }
+            });
+        }
 
         res.json(user);
     } catch (err) {
@@ -73,11 +75,13 @@ exports.deleteUser = async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        req.ws.clients.forEach((client) => {
-            if (client.readyState === WebSocket.OPEN) {
-                client.send(JSON.stringify({ type: 'deleted_user', data: deletedUser }));
-            }
-        });
+        if (req.ws && req.ws.clients) {
+            req.ws.clients.forEach((client) => {
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(JSON.stringify({ type: 'deleted_user', data: deletedUser }));
+                }
+            });
+        }
 
         res.json({ success: true });
     } catch (err) {
