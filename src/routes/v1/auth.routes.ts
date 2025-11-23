@@ -24,9 +24,11 @@ const router = Router();
  *             properties:
  *               username:
  *                 type: string
+ *                 example: max
  *                 minLength: 3
  *               password:
  *                 type: string
+ *                 example: password
  *                 minLength: 8
  *     responses:
  *       201:
@@ -53,8 +55,10 @@ router.post('/register', validate(registerSchema), authController.register);
  *             properties:
  *               username:
  *                 type: string
+ *                 example: max
  *               password:
  *                 type: string
+ *                 example: password
  *     responses:
  *       200:
  *         description: Login successful
