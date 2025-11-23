@@ -1,34 +1,34 @@
+import 'dotenv/config';
 import { z } from 'zod';
 
 const envSchema = z.object({
-  NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
-  PORT: z.string().default('3000').transform(Number).pipe(z.number().positive()),
-  DATABASE_URL: z.string().url(),
-  JWT_SECRET: z.string().min(32),
-  DOCKER: z.string().default('false').transform((val) => val === 'true'),
-  URL: z.string().url().optional(),
+    NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+    PORT: z.string().default('3000'),
+    DATABASE_URL: z.string(),
+    JWT_SECRET: z.string().min(32),
+    URL: z.string().optional(),
+    DOCKER: z.string().optional(),
+    BEHIND_PROXY: z.string().optional().default('false'),
 });
 
-export type Env = z.infer<typeof envSchema>;
+export const validateEnv = () => {
+    const parsed = envSchema.safeParse(process.env);
 
-let env: Env;
-
-export function validateEnv(): Env {
-  try {
-    env = envSchema.parse(process.env);
-    return env;
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      const missingVars = error.issues.map((e: z.ZodIssue) => `${e.path.join('.')}: ${e.message}`).join('\n');
-      throw new Error(`❌ Invalid environment variables:\n${missingVars}`);
+    if (!parsed.success) {
+        const missingVars = parsed.error.issues
+            .map(issue => `${issue.path.join('.')}: ${issue.message}`)
+            .join('\n');
+        throw new Error(`❌ Invalid environment variables:\n${missingVars}`);
     }
-    throw error;
-  }
-}
 
-export function getEnv(): Env {
-  if (!env) {
-    env = validateEnv();
-  }
-  return env;
-}
+    return parsed.data;
+};
+
+let cachedEnv: z.infer<typeof envSchema> | null = null;
+
+export const getEnv = () => {
+    if (!cachedEnv) {
+        cachedEnv = validateEnv();
+    }
+    return cachedEnv;
+};
