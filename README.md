@@ -100,6 +100,7 @@ Create a `.env` file in the project root with the following variables:
 NODE_ENV=development
 PORT=3000
 URL=http://localhost
+BEHIND_PROXY=false
 
 # Database
 DATABASE_URL=mongodb://localhost:27017/livechat
@@ -107,9 +108,11 @@ DATABASE_URL=mongodb://localhost:27017/livechat
 # JWT Secret (generate a secure random string)
 JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
 
-# Logging
-LOG_LEVEL=info
+# Docker
+DOCKER=false
 ```
+
+**Important**: Set `BEHIND_PROXY=true` if running behind a reverse proxy (nginx, Apache, etc.)
 
 ## Running the Application
 
@@ -125,6 +128,36 @@ Server will start at `http://localhost:3000`
 npm run build
 npm start
 ```
+
+## Reverse Proxy Configuration
+
+When running behind a reverse proxy (e.g., nginx, Apache), ensure WebSocket support is enabled.
+
+### Example nginx Configuration
+
+```nginx
+server {
+    listen 80;
+    server_name yourdomain.com;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+
+        # WebSocket support
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+
+        # Standard proxy headers
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+**Important**: Set `BEHIND_PROXY=true` in your `.env` file when using a reverse proxy.
 
 ## Testing
 
@@ -158,14 +191,14 @@ http://localhost:3000/api/docs
 - `POST /api/v1/auth/login` - Login and receive JWT token
 
 **Users:**
-- `GET /api/v1/users` - Get all users (authenticated)
-- `GET /api/v1/users/:id` - Get user by ID (authenticated)
+- `GET /api/v1/users` - Get all users (public)
+- `GET /api/v1/users/:id` - Get user by ID (public)
 - `PUT /api/v1/users/:id` - Update user profile (authenticated, own profile only)
 - `DELETE /api/v1/users/:id` - Delete user account (authenticated, own account only)
 
 **Chat Messages:**
-- `GET /api/v1/messages` - Get all messages
-- `GET /api/v1/messages/:id` - Get message by ID
+- `GET /api/v1/messages` - Get all messages (public)
+- `GET /api/v1/messages/:id` - Get message by ID (public)
 - `POST /api/v1/messages` - Create new message (authenticated)
 - `PUT /api/v1/messages/:id` - Update message (authenticated, own message only)
 - `DELETE /api/v1/messages/:id` - Delete message (authenticated, own message only)
@@ -199,7 +232,7 @@ livechat-backend/
 │   │   └── user.controller.ts
 │   ├── infrastructure/        # External services
 │   │   ├── database.ts       # Prisma client singleton
-│   │   └── websocket.ts      # Socket.io setup
+│   │   └── websocket.ts      # WebSocket server setup
 │   ├── middleware/            # Express middleware
 │   │   ├── auth.ts           # JWT authentication
 │   │   ├── errorHandler.ts   # Global error handler

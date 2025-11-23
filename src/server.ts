@@ -1,5 +1,6 @@
 import { createServer } from 'http';
-import { app, wss, DatabaseClient } from './app.js';
+import { app, DatabaseClient } from './app.js';
+import { initializeWebSocket } from './infrastructure/websocket.js';
 import { getEnv } from './config/env.js';
 import { logger } from './config/logger.js';
 
@@ -8,12 +9,8 @@ const env = getEnv();
 // Create HTTP server
 const server = createServer(app);
 
-// Attach WebSocket server to HTTP server
-server.on('upgrade', (request, socket, head) => {
-    wss.handleUpgrade(request, socket, head, (ws) => {
-        wss.emit('connection', ws, request);
-    });
-});
+// Initialize WebSocket server
+initializeWebSocket(server);
 
 // Start server
 server.listen(env.PORT, () => {

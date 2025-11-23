@@ -13,13 +13,11 @@ const router = Router();
  *     tags:
  *       - Users
  *     summary: Get all users
- *     security:
- *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: List of users
  */
-router.get('/', authenticate, userController.getAllUsers);
+router.get('/', userController.getAllUsers);
 
 /**
  * @swagger
@@ -28,8 +26,6 @@ router.get('/', authenticate, userController.getAllUsers);
  *     tags:
  *       - Users
  *     summary: Get a single user
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
@@ -40,7 +36,7 @@ router.get('/', authenticate, userController.getAllUsers);
  *       200:
  *         description: User found
  */
-router.get('/:id', authenticate, validate(getUserSchema), userController.getUserById);
+router.get('/:id', validate(getUserSchema), userController.getUserById);
 
 /**
  * @swagger
