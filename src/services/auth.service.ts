@@ -69,6 +69,25 @@ export class AuthService {
       token,
     };
   }
+
+  /**
+   * Handles the logout and sends websocket event
+   * @param username Username of the user logging out
+   * @param userId ID of the user logging out
+   * @throws {UnauthorizedError} If credentials are invalid
+   */
+  async logout(username: string, userId: string){
+    
+    await userRepository.updateLastActivity(userId);
+
+    const wsManager = getWebSocketManager();
+    if (wsManager) {
+      wsManager.broadcast({
+        type: 'new_logout',
+        data: { username: username },
+      });
+    }
+  }
 }
 
 export default new AuthService();

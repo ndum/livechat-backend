@@ -3,6 +3,8 @@ import authService from '../services/auth.service.js';
 import { RegisterDTO, LoginDTO } from '../validators/index.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
 import logger from '../config/logger.js';
+import { AuthRequest } from '../middleware/auth.js';
+import { UnauthorizedError } from '../utils/errors.js';
 
 export class AuthController {
   register = asyncHandler(async (req: Request, res: Response): Promise<void> => {
@@ -23,6 +25,21 @@ export class AuthController {
     logger.info(`User logged in: ${data.username}`);
 
     res.status(200).json(result);
+  });
+
+  logout = asyncHandler(async (req: AuthRequest, res: Response): Promise<void> => {
+    let username = req.user?.username;
+    let userId = req.user?.id;
+
+    if (!username || !userId) {
+      throw new UnauthorizedError('User authentication required');
+    }
+
+    await authService.logout(username, userId);
+
+    logger.info(`User logged out: ${req.user?.username}`);
+
+    res.status(200).json("{}");
   });
 }
 

@@ -3,7 +3,7 @@ import { WebSocketServer, WebSocket } from 'ws';
 import logger from '../config/logger.js';
 
 export interface WebSocketMessage {
-  type: 'new_message' | 'changed_message' | 'deleted_message' | 'new_login' | 'changed_user' | 'deleted_user';
+  type: 'new_message' | 'changed_message' | 'deleted_message' | 'new_login' | 'changed_user' | 'deleted_user' | 'new_logout';
   data: unknown;
 }
 

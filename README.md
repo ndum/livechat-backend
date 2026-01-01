@@ -189,6 +189,7 @@ http://localhost:3000/api/docs
 **Authentication:**
 - `POST /api/v1/auth/register` - Register a new user
 - `POST /api/v1/auth/login` - Login and receive JWT token
+- `POST /api/v1/auth/logout` - Logout user
 
 **Users:**
 - `GET /api/v1/users` - Get all users (public)
@@ -214,6 +215,7 @@ Connect to WebSocket at `ws://localhost:3000`
 - `deleted_message` - Message deleted
 - `changed_user` - User profile updated
 - `deleted_user` - User account deleted
+- `new_logout` - User logged out
 
 ## Project Structure
 
