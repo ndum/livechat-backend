@@ -83,7 +83,7 @@ export class AuthService {
     if (wsManager) {
       wsManager.broadcast({
         type: 'new_logout',
-        data: { username: username },
+        data: { username },
       });
     }
   }
