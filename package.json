@@ -1,6 +1,6 @@
 {
     "name": "livechat-backend",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "description": "Modern live chat backend with TypeScript, Prisma, and clean architecture",
     "type": "module",
     "main": "dist/server.js",
