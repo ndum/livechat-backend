@@ -149,6 +149,8 @@ describe('Authentication API', () => {
         .send();
 
       expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('success');
+      expect(response.body.success).toBe(true);
     });
 
     it('should reject logout without authentication', async () => {
