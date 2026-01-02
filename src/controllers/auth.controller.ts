@@ -28,16 +28,11 @@ export class AuthController {
   });
 
   logout = asyncHandler(async (req: AuthRequest, res: Response): Promise<void> => {
-    const username = req.user?.username;
-    const userId = req.user?.id;
-
-    if (!username || !userId) {
-      throw new UnauthorizedError('User authentication required');
-    }
+    const { username, id: userId } = req.user!;
 
     await authService.logout(username, userId);
-
-    logger.info(`User logged out: ${req.user?.username}`);
+    
+    logger.info(`User logged out: ${username}`);
 
     res.status(200).json({ success: true });
   });
