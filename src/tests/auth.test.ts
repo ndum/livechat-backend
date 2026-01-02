@@ -138,4 +138,27 @@ describe('Authentication API', () => {
       expect(response.status).toBe(400);
     });
   });
+
+  describe('POST /api/v1/auth/logout', () => {
+    it('should logout a user with authentication', async () => {
+      const user = await createTestUser();
+
+      const response = await request(app)
+        .post('/api/v1/auth/logout')
+        .set('Authorization', `Bearer ${user.token}`)
+        .send();
+
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('success');
+      expect(response.body.success).toBe(true);
+    });
+
+    it('should reject logout without authentication', async () => {
+      const response = await request(app)
+        .post('/api/v1/auth/logout')
+        .send();
+
+      expect(response.status).toBe(401);
+    });
+  });
 });

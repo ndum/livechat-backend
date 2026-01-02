@@ -3,6 +3,7 @@ import authService from '../services/auth.service.js';
 import { RegisterDTO, LoginDTO } from '../validators/index.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
 import logger from '../config/logger.js';
+import { AuthRequest } from '../middleware/auth.js';
 
 export class AuthController {
   register = asyncHandler(async (req: Request, res: Response): Promise<void> => {
@@ -23,6 +24,16 @@ export class AuthController {
     logger.info(`User logged in: ${data.username}`);
 
     res.status(200).json(result);
+  });
+
+  logout = asyncHandler(async (req: AuthRequest, res: Response): Promise<void> => {
+    const { username, id: userId } = req.user!;
+
+    await authService.logout(username, userId);
+    
+    logger.info(`User logged out: ${username}`);
+
+    res.status(200).json({ success: true });
   });
 }
 
