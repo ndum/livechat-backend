@@ -4,7 +4,6 @@ import { RegisterDTO, LoginDTO } from '../validators/index.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
 import logger from '../config/logger.js';
 import { AuthRequest } from '../middleware/auth.js';
-import { UnauthorizedError } from '../utils/errors.js';
 
 export class AuthController {
   register = asyncHandler(async (req: Request, res: Response): Promise<void> => {
