@@ -28,8 +28,8 @@ export class AuthController {
   });
 
   logout = asyncHandler(async (req: AuthRequest, res: Response): Promise<void> => {
-    let username = req.user?.username;
-    let userId = req.user?.id;
+    const username = req.user?.username;
+    const userId = req.user?.id;
 
     if (!username || !userId) {
       throw new UnauthorizedError('User authentication required');
