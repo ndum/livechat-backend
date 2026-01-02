@@ -77,7 +77,6 @@ export class AuthService {
    * @throws {UnauthorizedError} If credentials are invalid
    */
   async logout(username: string, userId: string){
-    
     await userRepository.updateLastActivity(userId);
 
     const wsManager = getWebSocketManager();
