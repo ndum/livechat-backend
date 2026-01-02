@@ -18,10 +18,14 @@ describe('User API', () => {
       expect(response.body.length).toBe(2);
     });
 
-    it('should reject getting users without authentication', async () => {
+    it('should allow getting users without authentication', async () => {
+      await createTestUser('user1');
+      await createTestUser('user2');
+
       const response = await request(app).get('/api/v1/users');
 
-      expect(response.status).toBe(401);
+      expect(response.status).toBe(200);
+      expect(Array.isArray(response.body)).toBe(true);
     });
   });
 
@@ -40,12 +44,14 @@ describe('User API', () => {
       expect(response.body).not.toHaveProperty('password');
     });
 
-    it('should reject getting user without authentication', async () => {
+    it('should allow getting user without authentication', async () => {
       const user = await createTestUser();
 
       const response = await request(app).get(`/api/v1/users/${user.id}`);
 
-      expect(response.status).toBe(401);
+      expect(response.status).toBe(200);
+      expect(response.body.id).toBe(user.id);
+      expect(response.body).not.toHaveProperty('password');
     });
 
     it('should return 404 for non-existent user', async () => {
